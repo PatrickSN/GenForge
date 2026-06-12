@@ -152,8 +152,8 @@ export function VariantsPage({ token, projects }: VariantsPageProps) {
                 margin: { l: 50, r: 20, t: 20, b: 45 },
                 paper_bgcolor: "rgba(0,0,0,0)",
                 plot_bgcolor: "rgba(0,0,0,0)",
-                xaxis: { title: "Cromossomo" },
-                yaxis: { title: "Posicao" },
+                xaxis: { title: { text: "Cromossomo" } },
+                yaxis: { title: { text: "Posicao" } },
               }}
               style={{ width: "100%" }}
               config={{ displayModeBar: false, responsive: true }}

@@ -1,0 +1,32 @@
+name: genforge
+
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - python=3.11
+  - nodejs=22
+
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - plotly
+  - scikit-learn
+  - statsmodels
+  - seaborn
+
+  - samtools
+  - bcftools
+  - htslib
+  - bedtools
+  - vcftools
+  - tabix
+  - pysam
+  - cyvcf2
+  - biopython
+
+  - nextflow
+
+  - pip
