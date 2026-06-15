@@ -4,10 +4,12 @@ Revision ID: 202606110001
 Revises:
 Create Date: 2026-06-11 22:00:00.000000
 """
+
 from __future__ import annotations
 
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 revision = "202606110001"
 down_revision = None
@@ -24,7 +26,12 @@ def upgrade() -> None:
         sa.Column("hashed_password", sa.String(length=255), nullable=False),
         sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.true()),
         sa.Column("is_superuser", sa.Boolean(), nullable=False, server_default=sa.false()),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("now()"),
+        ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("email", name="uq_users_email"),
     )
@@ -36,7 +43,12 @@ def upgrade() -> None:
         sa.Column("project_name", sa.String(length=255), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column("owner_id", sa.Uuid(), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("now()"),
+        ),
         sa.ForeignKeyConstraint(["owner_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("owner_id", "project_name", name="uq_projects_owner_name"),
@@ -48,7 +60,12 @@ def upgrade() -> None:
         sa.Column("id", sa.Uuid(), nullable=False),
         sa.Column("sample_name", sa.String(length=255), nullable=False),
         sa.Column("project_id", sa.Uuid(), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("now()"),
+        ),
         sa.ForeignKeyConstraint(["project_id"], ["projects.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("project_id", "sample_name", name="uq_samples_project_name"),
@@ -60,7 +77,12 @@ def upgrade() -> None:
         sa.Column("id", sa.Uuid(), nullable=False),
         sa.Column("gene_id", sa.String(length=255), nullable=False),
         sa.Column("chromosome", sa.String(length=64), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("now()"),
+        ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("gene_id", name="uq_genes_gene_id"),
     )
@@ -77,7 +99,12 @@ def upgrade() -> None:
         sa.Column("size_bytes", sa.BigInteger(), nullable=False),
         sa.Column("checksum_sha256", sa.String(length=64), nullable=False),
         sa.Column("status", sa.String(length=32), nullable=False, server_default="uploaded"),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("now()"),
+        ),
         sa.ForeignKeyConstraint(["project_id"], ["projects.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["uploaded_by_id"], ["users.id"], ondelete="RESTRICT"),
         sa.PrimaryKeyConstraint("id"),
@@ -97,7 +124,12 @@ def upgrade() -> None:
         sa.Column("impact", sa.String(length=64), nullable=True),
         sa.Column("gene_id", sa.String(length=255), nullable=True),
         sa.Column("source_file_id", sa.Uuid(), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("now()"),
+        ),
         sa.ForeignKeyConstraint(["gene_id"], ["genes.gene_id"], ondelete="SET NULL"),
         sa.ForeignKeyConstraint(["project_id"], ["projects.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["sample_id"], ["samples.id"], ondelete="SET NULL"),
@@ -106,7 +138,9 @@ def upgrade() -> None:
     )
     op.create_index("ix_variants_gene_id", "variants", ["gene_id"])
     op.create_index("ix_variants_impact", "variants", ["impact"])
-    op.create_index("ix_variants_project_chrom_pos", "variants", ["project_id", "chromosome", "position"])
+    op.create_index(
+        "ix_variants_project_chrom_pos", "variants", ["project_id", "chromosome", "position"]
+    )
     op.create_index("ix_variants_sample_id", "variants", ["sample_id"])
 
     op.create_table(
@@ -117,7 +151,12 @@ def upgrade() -> None:
         sa.Column("tool", sa.String(length=64), nullable=False, server_default="vcf-ingest"),
         sa.Column("variants_inserted", sa.BigInteger(), nullable=False, server_default="0"),
         sa.Column("log", sa.Text(), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("now()"),
+        ),
         sa.Column("started_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("finished_at", sa.DateTime(timezone=True), nullable=True),
         sa.ForeignKeyConstraint(["file_id"], ["variant_files.id"], ondelete="CASCADE"),

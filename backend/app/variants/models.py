@@ -8,6 +8,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.projects.models import Project
+    from app.samples.models import Sample
+    from app.users.models import User
 
 class Gene(Base):
     __tablename__ = "genes"
@@ -21,7 +27,7 @@ class Gene(Base):
         nullable=False,
     )
 
-    variants: Mapped[list["Variant"]] = relationship(back_populates="gene")
+    variants: Mapped[list[Variant]] = relationship(back_populates="gene")
 
 
 class VariantFile(Base):
@@ -50,10 +56,10 @@ class VariantFile(Base):
         nullable=False,
     )
 
-    project: Mapped["Project"] = relationship(back_populates="files")
-    uploaded_by: Mapped["User"] = relationship(back_populates="uploads")
-    processing_jobs: Mapped[list["VariantProcessingJob"]] = relationship(back_populates="file")
-    variants: Mapped[list["Variant"]] = relationship(back_populates="source_file")
+    project: Mapped[Project] = relationship(back_populates="files")
+    uploaded_by: Mapped[User] = relationship(back_populates="uploads")
+    processing_jobs: Mapped[list[VariantProcessingJob]] = relationship(back_populates="file")
+    variants: Mapped[list[Variant]] = relationship(back_populates="source_file")
 
 
 class VariantProcessingJob(Base):
@@ -118,7 +124,7 @@ class Variant(Base):
         nullable=False,
     )
 
-    project: Mapped["Project"] = relationship(back_populates="variants")
-    sample: Mapped["Sample | None"] = relationship(back_populates="variants")
-    gene: Mapped["Gene | None"] = relationship(back_populates="variants")
-    source_file: Mapped["VariantFile | None"] = relationship(back_populates="variants")
+    project: Mapped[Project] = relationship(back_populates="variants")
+    sample: Mapped[Sample | None] = relationship(back_populates="variants")
+    gene: Mapped[Gene | None] = relationship(back_populates="variants")
+    source_file: Mapped[VariantFile | None] = relationship(back_populates="variants")
