@@ -4,10 +4,8 @@ from typing import Generic, TypeVar
 
 from pydantic import BaseModel, Field
 
-T = TypeVar("T")
 
-
-class Page(BaseModel, Generic[T]):
+class Page[T](BaseModel):
     items: list[T]
     total: int
     limit: int = Field(ge=1, le=500)
