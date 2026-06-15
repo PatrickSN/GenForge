@@ -59,7 +59,7 @@ A tabela `variants` já inclui índice em `(project_id, chromosome, position)`, 
 ## Requisitos
 
 - Docker e Docker Compose
-- Python 3.13 para desenvolvimento local do backend
+- Python 3.11+ para desenvolvimento local do backend
 - Node.js 22 para desenvolvimento local do frontend
 - PostgreSQL 16
 - Redis 7
@@ -121,7 +121,7 @@ No Windows PowerShell:
 
 ```powershell
 cd backend
-py -3.13 -m venv .venv
+py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements-dev.txt
@@ -133,7 +133,7 @@ No Linux/macOS:
 
 ```bash
 cd backend
-python3.13 -m venv .venv
+python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements-dev.txt

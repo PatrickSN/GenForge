@@ -45,7 +45,7 @@ npm install
 
 ## Ferramentas obrigatorias para desenvolvimento local
 
-- Python 3.13
+- Python 3.11+
 - Node.js 22
 - Docker
 - Docker Compose
@@ -78,7 +78,7 @@ Pacotes Python opcionais de bioinformatica:
 Recomendado para desenvolvimento:
 
 1. Instale Docker Desktop.
-2. Instale Python 3.13.
+2. Instale Python 3.11 ou superior.
 3. Instale Node.js 22 LTS.
 4. Instale Java 17 ou superior.
 5. Use WSL2 para ferramentas nativas de bioinformatica quando possivel.
@@ -118,7 +118,7 @@ Ubuntu/Debian:
 
 ```bash
 sudo apt update
-sudo apt install -y python3.13 python3.13-venv nodejs npm postgresql redis-server \
+sudo apt install -y python3.11 python3.11-venv nodejs npm postgresql redis-server \
   bcftools samtools primer3 openjdk-17-jre-headless curl unzip
 ```
 
@@ -143,7 +143,7 @@ unzip snpEff_latest_core.zip
 Com Homebrew:
 
 ```bash
-brew install python@3.13 node postgresql@16 redis bcftools samtools primer3 openjdk@17 nextflow
+brew install python@3.11 node postgresql@16 redis bcftools samtools primer3 openjdk@17 nextflow
 ```
 
 SnpEff:

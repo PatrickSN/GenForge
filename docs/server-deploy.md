@@ -26,7 +26,7 @@ CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://200.235.143.10:5
 3. Instale dependencias e aplique migrations:
 
 ```bash
-python3.13 -m venv .venv
+python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements-dev.txt
