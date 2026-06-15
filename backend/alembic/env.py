@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from logging.config import fileConfig
 
+from alembic.util import CommandError
 from sqlalchemy import engine_from_config, pool
+from sqlalchemy.exc import SQLAlchemyError
 
 from alembic import context
 from app.annotation import ports as annotation_ports  # noqa: F401
 from app.core.config import get_settings
-from app.core.database import Base
+from app.core.database import Base, build_database_connection_error_message
 from app.projects import models as project_models  # noqa: F401
 from app.samples import models as sample_models  # noqa: F401
 from app.users import models as user_models  # noqa: F401
@@ -19,7 +21,8 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
-config.set_main_option("sqlalchemy.url", get_settings().database_url)
+settings = get_settings()
+config.set_main_option("sqlalchemy.url", settings.database_url)
 
 
 def run_migrations_offline() -> None:
@@ -36,17 +39,26 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    try:
+        connectable = engine_from_config(
+            config.get_section(config.config_ini_section, {}),
+            prefix="sqlalchemy.",
+            poolclass=pool.NullPool,
+        )
 
-    with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        with connectable.connect() as connection:
+            context.configure(connection=connection, target_metadata=target_metadata)
 
-        with context.begin_transaction():
-            context.run_migrations()
+            with context.begin_transaction():
+                context.run_migrations()
+    except SQLAlchemyError as exc:
+        raise CommandError(
+            build_database_connection_error_message(
+                settings.database_url,
+                exc,
+                "Alembic migrations",
+            )
+        ) from exc
 
 
 if context.is_offline_mode():

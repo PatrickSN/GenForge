@@ -23,6 +23,18 @@ STORAGE_DIR=storage_data/uploads
 CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://200.235.143.10:5173
 ```
 
+O valor de `DATABASE_URL` deve usar o usuario e a senha reais do PostgreSQL no servidor.
+Se a senha tiver caracteres especiais como `@`, `#`, `/` ou `:`, codifique a senha para URL antes de colocar no arquivo `.env`.
+Erro como `FATAL: autenticacao do tipo senha falhou para o usuario "genforge"` indica que o PostgreSQL respondeu, mas o usuario ou a senha em `DATABASE_URL` nao conferem com o banco.
+
+Use `localhost` quando o backend roda diretamente no servidor e acessa um PostgreSQL local. Use `postgres` como host apenas quando o backend roda dentro do Docker Compose deste repositorio.
+
+Antes de rodar as migrations, valide o login no PostgreSQL sem colocar a senha no historico do shell:
+
+```bash
+psql "postgresql://usuario@localhost:5432/genforge" -W -c "select 1;"
+```
+
 3. Instale dependencias e aplique migrations:
 
 ```bash
