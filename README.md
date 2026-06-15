@@ -60,7 +60,7 @@ A tabela `variants` já inclui índice em `(project_id, chromosome, position)`, 
 
 - Docker e Docker Compose
 - Python 3.11+ para desenvolvimento local do backend
-- Node.js 22 para desenvolvimento local do frontend
+- Node.js 22.12+ para desenvolvimento local do frontend
 - PostgreSQL 16
 - Redis 7
 

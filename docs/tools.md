@@ -36,7 +36,7 @@ pip install -r requirements.txt
 
 ## Dependencias JavaScript
 
-O frontend usa Node.js 22 e npm:
+O frontend usa Node.js 22.12+ e npm:
 
 ```bash
 cd frontend
@@ -46,7 +46,7 @@ npm install
 ## Ferramentas obrigatorias para desenvolvimento local
 
 - Python 3.11+
-- Node.js 22
+- Node.js 22.12+
 - Docker
 - Docker Compose
 - PostgreSQL 16
@@ -79,7 +79,7 @@ Recomendado para desenvolvimento:
 
 1. Instale Docker Desktop.
 2. Instale Python 3.11 ou superior.
-3. Instale Node.js 22 LTS.
+3. Instale Node.js 22.12 LTS ou superior.
 4. Instale Java 17 ou superior.
 5. Use WSL2 para ferramentas nativas de bioinformatica quando possivel.
 
