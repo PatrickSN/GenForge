@@ -37,7 +37,9 @@ def parse_vcf_file(path: str | Path) -> Iterator[VariantIngestRecord]:
             if len(columns) < 8:
                 continue
 
-            chromosome, position, _record_id, reference, alternatives, _qual, _filter, info = columns[:8]
+            chromosome, position, _record_id, reference, alternatives, _qual, _filter, info = (
+                columns[:8]
+            )
             impact, gene_id = _extract_snpeff_annotation(info)
             sample_name = sample_names[0] if len(sample_names) == 1 else None
             for alternative in alternatives.split(","):
@@ -61,7 +63,9 @@ def _extract_snpeff_annotation(info: str) -> tuple[str | None, str | None]:
     if "GENE" in fields:
         return fields.get("IMPACT"), fields["GENE"]
 
-    ann = next((item.removeprefix("ANN=") for item in info.split(";") if item.startswith("ANN=")), None)
+    ann = next(
+        (item.removeprefix("ANN=") for item in info.split(";") if item.startswith("ANN=")), None
+    )
     if ann is None:
         return None, None
 
