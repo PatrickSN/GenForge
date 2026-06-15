@@ -24,6 +24,7 @@ Módulos permitidos:
 * projects
 * files
 * storage
+* variants
 
 Não implementar:
 
@@ -136,6 +137,9 @@ Fase 1:
 * usuários
 * projetos
 * arquivos
+* upload de VCF
+* ingestão inicial de variantes
+* consulta paginada de variantes
 
 Fase 2:
 
