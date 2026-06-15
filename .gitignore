@@ -17,7 +17,6 @@ npm-debug.log*
 
 # Environment and local data
 .env
-storage/
 *.sqlite3
 
 # IDE
