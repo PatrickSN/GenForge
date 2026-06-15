@@ -29,7 +29,9 @@ class VariantRepository:
     def get_job(self, job_id: UUID) -> VariantProcessingJob | None:
         return self.session.get(VariantProcessingJob, job_id)
 
-    def list_variants(self, filters: VariantFilter, limit: int, offset: int) -> tuple[list[Variant], int]:
+    def list_variants(
+        self, filters: VariantFilter, limit: int, offset: int
+    ) -> tuple[list[Variant], int]:
         stmt = self._filtered_statement(filters)
         total = self.session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
         items_stmt = stmt.order_by(Variant.chromosome, Variant.position).limit(limit).offset(offset)
@@ -94,7 +96,9 @@ class VariantRepository:
                 self.session.scalars(select(Gene.gene_id).where(Gene.gene_id.in_(gene_ids)))
             )
             for gene_id in gene_ids - existing_gene_ids:
-                chromosome = next(record.chromosome for record in batch if record.gene_id == gene_id)
+                chromosome = next(
+                    record.chromosome for record in batch if record.gene_id == gene_id
+                )
                 self.session.add(Gene(gene_id=gene_id, chromosome=chromosome))
 
         sample_names = {record.sample_name for record in batch if record.sample_name}

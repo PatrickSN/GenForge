@@ -179,8 +179,20 @@ cd frontend
 npm run build
 ```
 
+## Teste em servidor Linux
+
+Para testar o GenForge em um servidor acessado por VPN ou IP externo, configure `backend/.env` e `frontend/.env` antes de iniciar os servicos.
+
+- Backend: definir `DATABASE_URL`, `SECRET_KEY`, `ACCESS_TOKEN_EXPIRE_MINUTES` e `CORS_ORIGINS`.
+- Frontend: definir `VITE_API_BASE_URL`, por exemplo `http://200.235.143.10:8000`.
+- API: rodar `uvicorn app.main:app --host 0.0.0.0 --port 8000`.
+- Frontend: rodar `npm run dev -- --host 0.0.0.0` ou validar com `npm run build`.
+
+Veja o passo a passo em [docs/server-deploy.md](docs/server-deploy.md).
+
 ## Endpoints principais
 
+- `GET /`
 - `GET /health`
 - `POST /api/v1/auth/register`
 - `POST /api/v1/auth/login`

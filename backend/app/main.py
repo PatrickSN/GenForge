@@ -29,6 +29,16 @@ app.add_middleware(
 )
 
 
+@app.get("/", tags=["system"])
+def root() -> dict[str, str]:
+    return {
+        "name": "GenForge API",
+        "status": "running",
+        "docs": "/docs",
+        "health": "/health",
+    }
+
+
 @app.get("/health", tags=["system"])
 def health_check() -> dict[str, str]:
     return {"status": "ok", "service": settings.app_name}

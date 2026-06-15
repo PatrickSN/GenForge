@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, DateTime, String, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 
+if TYPE_CHECKING:
+    from app.projects.models import Project
+    from app.variants.models import VariantFile
 
 class User(Base):
     __tablename__ = "users"
@@ -24,5 +28,5 @@ class User(Base):
         nullable=False,
     )
 
-    projects: Mapped[list["Project"]] = relationship(back_populates="owner")
-    uploads: Mapped[list["VariantFile"]] = relationship(back_populates="uploaded_by")
+    projects: Mapped[list[Project]] = relationship(back_populates="owner")
+    uploads: Mapped[list[VariantFile]] = relationship(back_populates="uploaded_by")

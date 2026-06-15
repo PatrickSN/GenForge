@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, ForeignKey, String, Text, Uuid, UniqueConstraint, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, UniqueConstraint, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 
+if TYPE_CHECKING:
+    from app.samples.models import Sample
+    from app.users.models import User
+    from app.variants.models import Variant, VariantFile
 
 class Project(Base):
     __tablename__ = "projects"
@@ -28,7 +33,7 @@ class Project(Base):
         nullable=False,
     )
 
-    owner: Mapped["User"] = relationship(back_populates="projects")
-    samples: Mapped[list["Sample"]] = relationship(back_populates="project")
-    variants: Mapped[list["Variant"]] = relationship(back_populates="project")
-    files: Mapped[list["VariantFile"]] = relationship(back_populates="project")
+    owner: Mapped[User] = relationship(back_populates="projects")
+    samples: Mapped[list[Sample]] = relationship(back_populates="project")
+    variants: Mapped[list[Variant]] = relationship(back_populates="project")
+    files: Mapped[list[VariantFile]] = relationship(back_populates="project")

@@ -2,16 +2,22 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, ForeignKey, String, Uuid, UniqueConstraint, func
+from sqlalchemy import DateTime, ForeignKey, String, UniqueConstraint, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 
+if TYPE_CHECKING:
+    from app.projects.models import Project
+    from app.variants.models import Variant
 
 class Sample(Base):
     __tablename__ = "samples"
-    __table_args__ = (UniqueConstraint("project_id", "sample_name", name="uq_samples_project_name"),)
+    __table_args__ = (
+        UniqueConstraint("project_id", "sample_name", name="uq_samples_project_name"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
     sample_name: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -27,5 +33,5 @@ class Sample(Base):
         nullable=False,
     )
 
-    project: Mapped["Project"] = relationship(back_populates="samples")
-    variants: Mapped[list["Variant"]] = relationship(back_populates="sample")
+    project: Mapped[Project] = relationship(back_populates="samples")
+    variants: Mapped[list[Variant]] = relationship(back_populates="sample")

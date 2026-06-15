@@ -24,6 +24,7 @@ Módulos permitidos:
 * projects
 * files
 * storage
+* variants
 
 Não implementar:
 
@@ -136,6 +137,9 @@ Fase 1:
 * usuários
 * projetos
 * arquivos
+* upload de VCF
+* ingestão inicial de variantes
+* consulta paginada de variantes
 
 Fase 2:
 
@@ -188,6 +192,20 @@ Não adicionar dependências sem justificativa.
 Sempre manter compatibilidade com PostgreSQL.
 
 Sempre manter compatibilidade com Docker Compose.
+
+---
+
+## Regras de Deploy e Git
+
+Nao commitar secrets, arquivos `.env` reais, tokens, chaves privadas ou senhas.
+
+Nao alterar `main` diretamente. Criar uma branch curta com prefixo `codex/` para mudancas de agente.
+
+Rodar os testes e validacoes disponiveis antes de finalizar. Quando uma validacao falhar por dependencia externa, documentar o comando, o erro, a causa provavel e o arquivo relacionado.
+
+Preservar compatibilidade com servidor Linux, Docker Compose, PostgreSQL e execucao via `uvicorn app.main:app --host 0.0.0.0 --port 8000`.
+
+Preferir mudancas pequenas, revisaveis e alinhadas aos padroes existentes do repositorio.
 
 ---
 

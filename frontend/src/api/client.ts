@@ -56,7 +56,18 @@ export type UploadResult = {
   };
 };
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000/api/v1";
+const API_CONNECTION_ERROR_MESSAGE =
+  "Não foi possível conectar à API GenForge. Verifique se o backend está ativo e se VITE_API_BASE_URL está correto.";
+
+function normalizeApiUrl(value: string): string {
+  const trimmed = value.trim().replace(/\/+$/, "");
+  const baseUrl = trimmed || "http://localhost:8000";
+  return baseUrl.endsWith("/api/v1") ? baseUrl : `${baseUrl}/api/v1`;
+}
+
+const API_URL = normalizeApiUrl(
+  import.meta.env.VITE_API_BASE_URL ?? import.meta.env.VITE_API_URL ?? "http://localhost:8000",
+);
 
 async function request<T>(
   path: string,
@@ -71,10 +82,15 @@ async function request<T>(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch {
+    throw new Error(API_CONNECTION_ERROR_MESSAGE);
+  }
   if (!response.ok) {
     const detail = await response.text();
     throw new Error(detail || `HTTP ${response.status}`);
