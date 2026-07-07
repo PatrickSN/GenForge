@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Generator
 from functools import lru_cache
 
+from fastapi import HTTPException, status
 from sqlalchemy import MetaData, create_engine
 from sqlalchemy.engine import Engine, make_url
 from sqlalchemy.exc import SQLAlchemyError
@@ -59,6 +60,14 @@ def build_database_connection_error_message(
     )
 
 
+def build_database_access_error_detail(action: str) -> str:
+    return (
+        f"Falha de acesso ao banco de dados ao executar {action}. "
+        "Verifique DATABASE_URL ou GENFORGE_DATABASE_URL em backend/.env, "
+        "confirme usuario/senha do PostgreSQL e execute alembic upgrade head."
+    )
+
+
 @lru_cache
 def get_engine() -> Engine:
     settings = get_settings()
@@ -89,8 +98,20 @@ def SessionLocal() -> Session:
 
 
 def get_session() -> Generator[Session]:
-    session = SessionLocal()
+    try:
+        session = SessionLocal()
+    except RuntimeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=build_database_access_error_detail("abrir sessao"),
+        ) from exc
     try:
         yield session
+    except SQLAlchemyError as exc:
+        session.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=build_database_access_error_detail("a requisicao"),
+        ) from exc
     finally:
         session.close()

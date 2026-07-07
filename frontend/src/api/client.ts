@@ -87,6 +87,9 @@ function translateKnownError(message: string, status: number): string {
   if (status === 401) return "Sessao expirada ou credenciais invalidas. Entre novamente.";
   if (status === 403) return "Voce nao tem permissao para acessar este recurso.";
   if (status === 404) return "Recurso nao encontrado ou indisponivel para seu usuario.";
+  if (status === 503) {
+    return message || "API GenForge indisponivel. Verifique o backend e a configuracao do banco.";
+  }
   if (normalized.includes("only .vcf and .vcf.gz files are accepted")) {
     return "Envie um arquivo .vcf ou .vcf.gz.";
   }

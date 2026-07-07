@@ -1,5 +1,25 @@
 # Project Memory
 
+## 2026-07-07 - Auth access error handling
+
+### Implementado
+
+- Falhas SQLAlchemy durante requisicoes agora sao convertidas para HTTP 503 com mensagem clara sobre `DATABASE_URL`, `backend/.env`, credenciais PostgreSQL e `alembic upgrade head`.
+- Frontend preserva mensagens 503 da API para que cadastro/login mostrem erro acionavel em vez de falha generica.
+- Documentacao de deploy e `.env.example` reforcam que senhas PostgreSQL com caracteres especiais precisam ser URL-encoded, por exemplo `@` como `%40`.
+
+### Causa raiz observada
+
+- O log do servidor em `erros.txt` mostra `FATAL: autenticacao do tipo senha falhou para o usuario "genforge"` ao rodar `alembic upgrade head`.
+- Isso indica que o PostgreSQL respondeu, mas usuario/senha em `DATABASE_URL` nao conferem ou a senha nao foi codificada corretamente.
+
+### Validacoes esperadas
+
+- `cd backend && pytest`
+- `cd backend && ruff check .`
+- `cd frontend && npm run lint`
+- `cd frontend && npm run build`
+
 ## 2026-06-26 - Phase 1 MVP consolidation
 
 ### Implementado
