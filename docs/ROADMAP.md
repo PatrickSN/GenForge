@@ -43,84 +43,86 @@ Criar uma primeira versão utilizável da plataforma com autenticação, projeto
 
 ## Backend
 
-* [ ] Configurar FastAPI.
-* [ ] Configurar variáveis de ambiente.
-* [ ] Configurar conexão com PostgreSQL.
-* [ ] Configurar SQLAlchemy 2.x.
-* [ ] Configurar Alembic.
-* [ ] Criar endpoint `GET /health`.
-* [ ] Configurar CORS.
-* [ ] Criar tratamento básico de erros.
+* [x] Configurar FastAPI.
+* [x] Configurar variáveis de ambiente.
+* [x] Configurar conexão com PostgreSQL.
+* [x] Configurar SQLAlchemy 2.x.
+* [x] Configurar Alembic.
+* [x] Criar endpoint `GET /health`.
+* [x] Configurar CORS.
+* [x] Criar tratamento básico de erros.
 * [ ] Criar logs básicos da aplicação.
 
 ## Autenticação e usuários
 
-* [ ] Criar modelo `User`.
-* [ ] Implementar cadastro.
-* [ ] Implementar login.
-* [ ] Implementar autenticação JWT.
-* [ ] Criar endpoint para consultar usuário autenticado.
-* [ ] Armazenar senhas com hash seguro.
-* [ ] Proteger endpoints privados.
+* [x] Criar modelo `User`.
+* [x] Implementar cadastro.
+* [x] Implementar login.
+* [x] Implementar autenticação JWT.
+* [x] Criar endpoint para consultar usuário autenticado.
+* [x] Armazenar senhas com hash seguro.
+* [x] Proteger endpoints privados.
 
 ## Projetos
 
-* [ ] Criar modelo `Project`.
-* [ ] Criar projeto.
-* [ ] Listar projetos do usuário.
-* [ ] Consultar detalhes de um projeto.
-* [ ] Editar projeto.
-* [ ] Excluir projeto.
-* [ ] Garantir que usuários acessem apenas projetos autorizados.
+* [x] Criar modelo `Project`.
+* [x] Criar projeto.
+* [x] Listar projetos do usuário.
+* [x] Consultar detalhes de um projeto.
+* [x] Editar projeto.
+* [x] Excluir projeto.
+* [x] Garantir que usuários acessem apenas projetos autorizados.
 
 ## Arquivos e armazenamento
 
-* [ ] Criar abstração de armazenamento.
-* [ ] Criar armazenamento local inicial.
-* [ ] Criar diretório por projeto.
-* [ ] Registrar metadados dos arquivos.
-* [ ] Aceitar upload de `.vcf` e `.vcf.gz`.
-* [ ] Validar extensão.
-* [ ] Validar existência do projeto.
-* [ ] Registrar o usuário responsável pelo upload.
-* [ ] Preparar migração futura para MinIO ou armazenamento compatível com S3.
+* [x] Criar abstração de armazenamento.
+* [x] Criar armazenamento local inicial.
+* [x] Criar diretório por projeto.
+* [x] Registrar metadados dos arquivos.
+* [x] Aceitar upload de `.vcf` e `.vcf.gz`.
+* [x] Validar extensão.
+* [x] Validar existência do projeto.
+* [x] Registrar o usuário responsável pelo upload.
+* [~] Preparar migração futura para MinIO ou armazenamento compatível com S3.
 
 ## Variantes
 
-* [ ] Criar modelo para arquivo VCF.
-* [ ] Criar modelo para jobs de processamento.
-* [ ] Criar modelo inicial de variante.
-* [ ] Ler cabeçalho do VCF.
-* [ ] Importar variantes básicas.
-* [ ] Armazenar cromossomo, posição, referência e alelo alternativo.
-* [ ] Criar paginação.
-* [ ] Criar filtros por cromossomo, posição e qualidade.
-* [ ] Exibir status de processamento.
-* [ ] Registrar falhas de ingestão.
+* [x] Criar modelo para arquivo VCF.
+* [x] Criar modelo para jobs de processamento.
+* [x] Criar modelo inicial de variante.
+* [x] Ler cabeçalho do VCF.
+* [x] Importar variantes básicas.
+* [x] Armazenar cromossomo, posição, referência e alelo alternativo.
+* [x] Criar paginação.
+* [~] Criar filtros por cromossomo, posição, gene e impacto; filtro de qualidade ainda pendente.
+* [x] Exibir status de processamento.
+* [x] Registrar falhas de ingestão.
 
 ## Frontend
 
-* [ ] Criar estrutura React + TypeScript + Vite.
-* [ ] Criar tela de login.
-* [ ] Criar tela de cadastro.
-* [ ] Criar rotas protegidas.
-* [ ] Criar dashboard inicial.
-* [ ] Criar listagem de projetos.
-* [ ] Criar formulário de novo projeto.
-* [ ] Criar tela de detalhes do projeto.
-* [ ] Criar upload de VCF.
-* [ ] Criar tabela paginada de variantes.
-* [ ] Exibir mensagens de erro amigáveis.
+* [x] Criar estrutura React + TypeScript + Vite.
+* [x] Criar tela de login.
+* [x] Criar tela de cadastro.
+* [x] Criar rotas protegidas.
+* [x] Criar dashboard inicial.
+* [x] Criar listagem de projetos.
+* [x] Criar formulário de novo projeto.
+* [x] Criar tela de detalhes do projeto.
+* [x] Editar e excluir projetos.
+* [x] Criar upload de VCF.
+* [x] Criar tabela paginada de variantes.
+* [x] Exibir histórico de arquivos VCF e jobs de processamento.
+* [x] Exibir mensagens de erro amigáveis.
 
 ## Testes
 
-* [ ] Testar endpoint de saúde.
-* [ ] Testar cadastro.
-* [ ] Testar login.
-* [ ] Testar autorização.
-* [ ] Testar CRUD de projetos.
-* [ ] Testar upload de VCF pequeno.
-* [ ] Testar ingestão inicial.
+* [x] Testar endpoint de saúde.
+* [x] Testar cadastro.
+* [x] Testar login.
+* [x] Testar autorização.
+* [x] Testar CRUD de projetos.
+* [x] Testar upload de VCF pequeno.
+* [~] Testar ingestão inicial com parser e job; falta smoke com worker/Celery real no servidor.
 * [ ] Testar filtros de variantes.
 
 ## Critérios para concluir a Fase 1
@@ -137,6 +139,10 @@ A fase estará concluída quando:
 8. A interface listar variantes com paginação e filtros.
 9. Os testes essenciais passarem.
 10. O README explicar como executar o MVP.
+
+## Status em 2026-06-26
+
+A Fase 1 está funcional para testes manuais com autenticação, projetos, upload VCF, consulta paginada de variantes e visualização de arquivos/jobs. Antes de declarar a fase concluída, ainda faltam validar migrations e worker Celery no servidor Linux, adicionar logs básicos da aplicação e cobrir filtros de variantes com testes automatizados.
 
 ---
 

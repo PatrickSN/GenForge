@@ -176,6 +176,7 @@ Frontend:
 
 ```bash
 cd frontend
+npm run lint
 npm run build
 ```
 
@@ -200,8 +201,13 @@ Veja o passo a passo em [docs/server-deploy.md](docs/server-deploy.md).
 - `GET /api/v1/projects`
 - `POST /api/v1/projects`
 - `GET /api/v1/projects/{project_id}`
+- `PATCH /api/v1/projects/{project_id}`
+- `DELETE /api/v1/projects/{project_id}`
 - `POST /api/v1/variants/upload?project_id={uuid}`
-- `GET /api/v1/variants?project_id={uuid}&chromosome=Chr1&gene_id=Gene001`
+- `GET /api/v1/variants?project_id={uuid}&chromosome=Chr1&gene_id=Gene001&limit=25&offset=0`
+- `GET /api/v1/variants/files?project_id={uuid}`
+- `GET /api/v1/variants/jobs?project_id={uuid}`
+- `GET /api/v1/variants/jobs/{job_id}`
 
 ## Modelo inicial
 
@@ -224,4 +230,4 @@ Campos mínimos solicitados:
 
 ## Próximos passos
 
-O roadmap técnico completo está em [docs/roadmap.md](docs/roadmap.md). A documentação arquitetural está em [docs/architecture.md](docs/architecture.md).
+O roadmap técnico completo está em [docs/ROADMAP.md](docs/ROADMAP.md). A documentação arquitetural está em [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). O estado implementado, validações e pendências ficam em [docs/PROJECT_MEMORY.md](docs/PROJECT_MEMORY.md).

@@ -65,3 +65,36 @@ class VariantService:
         if project is None or project.owner_id != user_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
         return self.variants.list_variants(filters, limit=limit, offset=offset)
+
+    def list_files(self, project_id: UUID, user_id: UUID, limit: int, offset: int):
+        project = self.projects.get_by_id(project_id)
+        if project is None or project.owner_id != user_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+        return self.variants.list_files_for_project(project_id, limit=limit, offset=offset)
+
+    def list_jobs(
+        self,
+        project_id: UUID,
+        user_id: UUID,
+        limit: int,
+        offset: int,
+        status_filter: str | None = None,
+    ):
+        project = self.projects.get_by_id(project_id)
+        if project is None or project.owner_id != user_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+        return self.variants.list_jobs_for_project(
+            project_id,
+            limit=limit,
+            offset=offset,
+            status=status_filter,
+        )
+
+    def get_job(self, job_id: UUID, user_id: UUID) -> VariantProcessingJob:
+        job = self.variants.get_job(job_id)
+        if job is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+        project = self.projects.get_by_id(job.file.project_id)
+        if project is None or project.owner_id != user_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+        return job

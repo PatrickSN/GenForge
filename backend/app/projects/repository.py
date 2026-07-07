@@ -27,3 +27,6 @@ class ProjectRepository:
             .offset(offset)
         )
         return list(self.session.scalars(stmt))
+
+    def delete(self, project: Project) -> None:
+        self.session.delete(project)

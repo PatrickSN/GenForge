@@ -15,7 +15,9 @@ class LocalObjectStorage:
         self.root_dir.mkdir(parents=True, exist_ok=True)
 
     async def save_upload(self, upload: UploadFile, namespace: str) -> tuple[Path, int, str]:
-        safe_suffix = Path(upload.filename or "upload.vcf").suffix or ".vcf"
+        filename = upload.filename or "upload.vcf"
+        safe_suffix = ".vcf.gz" if filename.lower().endswith(".vcf.gz") else Path(filename).suffix
+        safe_suffix = safe_suffix or ".vcf"
         target_dir = self.root_dir / namespace
         target_dir.mkdir(parents=True, exist_ok=True)
         target_path = target_dir / f"{uuid.uuid4()}{safe_suffix}"

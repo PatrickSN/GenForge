@@ -209,6 +209,28 @@ Preferir mudancas pequenas, revisaveis e alinhadas aos padroes existentes do rep
 
 ---
 
+## Memoria do Projeto
+
+Atualizar `docs/PROJECT_MEMORY.md` quando uma tarefa alterar comportamento, contratos de API, fluxo de execucao, validacoes ou pendencias relevantes.
+
+Registrar sempre:
+
+* data da alteracao
+* resumo do que foi implementado
+* arquivos ou modulos impactados
+* comandos de validacao executados
+* falhas conhecidas e proximos passos
+
+Estado atual da Fase 1 em 2026-06-26:
+
+* backend possui auth, users, projects, storage e variants funcionais para smoke manual
+* projetos possuem CRUD completo com ownership por usuario
+* upload VCF registra arquivo e job; ingestao completa depende do worker Celery
+* frontend usa `VITE_API_BASE_URL`, gerencia projetos, envia VCF e exibe variantes paginadas, arquivos e jobs
+* ainda falta validar migrations e worker Celery no servidor Linux real antes de encerrar a Fase 1
+
+---
+
 ## Definição de Conclusão
 
 Uma tarefa só é considerada concluída se:

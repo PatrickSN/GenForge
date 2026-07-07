@@ -34,6 +34,18 @@ Cada módulo do backend tem responsabilidade isolada:
 - `reports`: contratos para relatórios.
 - `gwas`, `ml`, `genomic_selection`: interfaces futuras.
 
+## Estado atual da Fase 1
+
+O MVP atual mantém o escopo em `auth`, `users`, `projects`, `storage`, `samples` e `variants`.
+
+- `auth` registra usuários, autentica com JWT e protege endpoints privados.
+- `projects` possui CRUD completo com validação de ownership por usuário.
+- `storage` salva uploads em `storage_data/projects/{project_id}/` e mantém apenas metadados no banco.
+- `variants` registra `VariantFile`, `VariantProcessingJob` e variantes consultáveis por paginação.
+- O frontend consome `VITE_API_BASE_URL`, autentica usuários, gerencia projetos, envia VCF e exibe arquivos/jobs e variantes paginadas.
+
+Módulos futuros como GWAS, EMS, IA, primers e pipelines NGS continuam fora do escopo de implementação da Fase 1.
+
 ## Fluxo de upload e ingestão
 
 ```mermaid
@@ -56,6 +68,18 @@ sequenceDiagram
   Worker->>DB: finalizar job
 ```
 
+No ambiente de desenvolvimento, o upload HTTP cria o arquivo e o job imediatamente. A ingestão completa depende do worker Celery executar `variants.process_variant_file`; por isso, testes manuais no servidor devem validar API, Redis/Celery e banco juntos.
+
+## Endpoints principais da Fase 1
+
+- `GET /` e `GET /health` para smoke checks.
+- `POST /api/v1/auth/register`, `POST /api/v1/auth/login` e `GET /api/v1/users/me`.
+- `GET /api/v1/projects`, `POST /api/v1/projects`, `GET /api/v1/projects/{project_id}`, `PATCH /api/v1/projects/{project_id}` e `DELETE /api/v1/projects/{project_id}`.
+- `POST /api/v1/variants/upload?project_id={uuid}`.
+- `GET /api/v1/variants?project_id={uuid}&limit=25&offset=0`.
+- `GET /api/v1/variants/files?project_id={uuid}`.
+- `GET /api/v1/variants/jobs?project_id={uuid}` e `GET /api/v1/variants/jobs/{job_id}`.
+
 ## Banco de dados
 
 Tabelas iniciais:
@@ -67,6 +91,8 @@ Tabelas iniciais:
 - `variant_files`
 - `variant_processing_jobs`
 - `variants`
+
+Todas as tabelas iniciais usam UUID como chave primária e devem manter `created_at` e `updated_at`. A migration `202606260001_add_updated_at_to_phase1_tables.py` adiciona `updated_at` às tabelas da Fase 1 que ainda não possuíam esse campo.
 
 Índices iniciais:
 
