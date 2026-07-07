@@ -180,6 +180,9 @@ npm run lint
 npm run build
 ```
 
+Veja a matriz de comandos, fixtures e status de validacao em
+[docs/tests.md](docs/tests.md).
+
 ## Teste em servidor Linux
 
 Para testar o GenForge em um servidor acessado por VPN ou IP externo, configure `backend/.env` e `frontend/.env` antes de iniciar os servicos.

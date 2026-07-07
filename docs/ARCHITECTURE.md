@@ -46,6 +46,23 @@ O MVP atual mantém o escopo em `auth`, `users`, `projects`, `storage`, `samples
 
 Módulos futuros como GWAS, EMS, IA, primers e pipelines NGS continuam fora do escopo de implementação da Fase 1.
 
+## Camada de testes
+
+A camada inicial de testes automatizados do backend fica em `backend/tests`.
+As fixtures compartilhadas criam um banco SQLite temporario por teste, usuario,
+token JWT, projeto e VCF minimo. O enfileiramento Celery e substituido por uma
+fixture que captura chamadas a `process_variant_file.delay`, mantendo os testes
+de API rapidos e sem exigir Redis/worker real.
+
+Os testes cobrem os contratos HTTP principais de `auth`, `users`, `projects` e
+`variants`, incluindo ownership por usuario, upload VCF, listagem de arquivos e
+jobs, paginacao de variantes e filtros implementados por cromossomo, gene,
+impacto e intervalo de posicao. A arvore Alembic tambem possui teste de head
+unico; a aplicacao online das migrations continua dependendo de PostgreSQL de
+desenvolvimento real.
+
+Os comandos oficiais de validacao ficam em `docs/tests.md`.
+
 ## Fluxo de upload e ingestão
 
 ```mermaid
