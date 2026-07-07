@@ -63,6 +63,14 @@ desenvolvimento real.
 
 Os comandos oficiais de validacao ficam em `docs/tests.md`.
 
+## Observabilidade inicial
+
+O backend configura logging basico via `LOG_LEVEL` ou `GENFORGE_LOG_LEVEL`.
+Requisicoes HTTP emitem eventos `request_completed` ou `request_failed` no
+logger `genforge.requests`, com metodo, path, status e duracao. O worker de
+variantes registra inicio, conclusao, job ausente e falhas no logger
+`genforge.tasks.variants`.
+
 ## Fluxo de upload e ingestão
 
 ```mermaid
@@ -110,6 +118,11 @@ Tabelas iniciais:
 - `variants`
 
 Todas as tabelas iniciais usam UUID como chave primária e devem manter `created_at` e `updated_at`. A migration `202606260001_add_updated_at_to_phase1_tables.py` adiciona `updated_at` às tabelas da Fase 1 que ainda não possuíam esse campo.
+
+Relacionamentos ORM que dependem de `ON DELETE CASCADE` ou `ON DELETE SET NULL`
+usam `passive_deletes` para deixar PostgreSQL aplicar as regras declaradas nas
+foreign keys, evitando updates para `NULL` em colunas obrigatorias durante delete
+de projetos com arquivos VCF/jobs associados.
 
 Índices iniciais:
 

@@ -43,6 +43,10 @@ class Settings(BaseSettings):
         default="storage_data",
         validation_alias=AliasChoices("GENFORGE_STORAGE_DIR", "STORAGE_DIR"),
     )
+    log_level: str = Field(
+        default="INFO",
+        validation_alias=AliasChoices("GENFORGE_LOG_LEVEL", "LOG_LEVEL"),
+    )
     backend_cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: list(DEFAULT_CORS_ORIGINS),
         validation_alias=AliasChoices(
@@ -95,6 +99,15 @@ class Settings(BaseSettings):
                 "Set SECRET_KEY or GENFORGE_SECRET_KEY in backend/.env."
             )
         return secret_key
+
+    @field_validator("log_level")
+    @classmethod
+    def normalize_log_level(cls, value: str) -> str:
+        log_level = value.strip().upper()
+        allowed = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+        if log_level not in allowed:
+            raise ValueError("LOG_LEVEL must be one of DEBUG, INFO, WARNING, ERROR or CRITICAL.")
+        return log_level
 
     @model_validator(mode="after")
     def validate_production_secrets(self) -> Self:

@@ -51,7 +51,7 @@ Criar uma primeira versão utilizável da plataforma com autenticação, projeto
 * [x] Criar endpoint `GET /health`.
 * [x] Configurar CORS.
 * [x] Criar tratamento básico de erros.
-* [ ] Criar logs básicos da aplicação.
+* [x] Criar logs básicos da aplicação para requisições HTTP e jobs de variantes.
 
 ## Autenticação e usuários
 
@@ -151,8 +151,18 @@ arquivos/jobs e listagem filtrada de variantes. As migrations geram SQL offline
 com sucesso, mas a aplicacao online em PostgreSQL de desenvolvimento ainda
 precisa ser revalidada quando houver banco local ou Docker disponivel. Antes de
 declarar a fase concluida, ainda faltam validar worker Celery/Redis real no
-servidor Linux, adicionar logs basicos da aplicacao e manter a validacao
-Alembic online no fluxo regular.
+servidor Linux e manter a validacao Alembic online no fluxo regular.
+
+## Status adicional em 2026-07-07
+
+A saida do servidor registrou Alembic online em `202606260001 (head)` e build
+frontend concluido. O backup com `pg_dump "$DATABASE_URL"` falhou porque o shell
+nao tinha `DATABASE_URL` exportado, a porta 8000 ja estava ocupada durante duas
+tentativas de Uvicorn, e o worker Celery ainda nao respondeu ao `inspect ping`.
+Foram adicionados logs basicos da API/worker e um smoke script para validar
+auth, users, projects, upload VCF, arquivos/jobs e variantes com mensagens de
+falha acionaveis. Tambem foi corrigido o delete de projetos com VCF/job
+associado para respeitar os cascades do banco.
 
 ---
 

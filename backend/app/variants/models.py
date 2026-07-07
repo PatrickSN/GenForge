@@ -69,8 +69,14 @@ class VariantFile(Base):
 
     project: Mapped[Project] = relationship(back_populates="files")
     uploaded_by: Mapped[User] = relationship(back_populates="uploads")
-    processing_jobs: Mapped[list[VariantProcessingJob]] = relationship(back_populates="file")
-    variants: Mapped[list[Variant]] = relationship(back_populates="source_file")
+    processing_jobs: Mapped[list[VariantProcessingJob]] = relationship(
+        back_populates="file",
+        passive_deletes=True,
+    )
+    variants: Mapped[list[Variant]] = relationship(
+        back_populates="source_file",
+        passive_deletes=True,
+    )
 
 
 class VariantProcessingJob(Base):

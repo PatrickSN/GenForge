@@ -20,6 +20,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 DATABASE_URL=postgresql+psycopg://usuario:senha@localhost:5432/genforge
 REDIS_URL=redis://localhost:6379/0
 STORAGE_DIR=storage_data
+LOG_LEVEL=INFO
 CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://200.235.143.10:5173
 ```
 
@@ -48,10 +49,33 @@ python -m pip install -r requirements-dev.txt
 alembic upgrade head
 ```
 
+Antes de aplicar migrations em banco persistente, crie um backup. O comando
+`pg_dump "$DATABASE_URL"` so funciona se `DATABASE_URL` tambem estiver exportado
+no shell; o Alembic le `backend/.env`, mas o `pg_dump` nao.
+
+```bash
+cd "$APP_DIR/backend"
+export DATABASE_URL="$(python -c 'from app.core.config import get_settings; print(get_settings().database_url)')"
+mkdir -p "$APP_DIR/backups"
+pg_dump "$DATABASE_URL" > "$APP_DIR/backups/genforge-before-alembic-$(date +%Y%m%d-%H%M%S).sql"
+```
+
+Se `pg_dump` tentar conectar pelo socket local usando o usuario Linux, por
+exemplo `role "lucas" nao existe`, o `DATABASE_URL` nao estava exportado para o
+processo do `pg_dump`.
+
 4. Rode a API:
 
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+Se aparecer `address already in use`, a porta 8000 ja tem outro processo. Nesse
+caso, teste o processo ativo antes de iniciar outro:
+
+```bash
+ss -ltnp 'sport = :8000'
+curl -fsS http://127.0.0.1:8000/health
 ```
 
 5. Teste os endpoints:
@@ -110,6 +134,28 @@ curl -X POST http://200.235.143.10:8000/api/v1/auth/login \
 
 Se o frontend mostrar erro de conexao, confirme se o backend esta ativo e se `VITE_API_BASE_URL` aponta para o host e porta corretos.
 
+## Worker Celery
+
+O upload VCF registra arquivo e job na API, mas a persistencia de variantes
+depende do worker Celery.
+
+Em um terminal separado, com o mesmo ambiente do backend ativo:
+
+```bash
+cd "$APP_DIR/backend"
+celery -A app.tasks.celery_app worker --loglevel=INFO
+```
+
+Em outro terminal:
+
+```bash
+cd "$APP_DIR/backend"
+celery -A app.tasks.celery_app inspect ping
+```
+
+Se o retorno for `No nodes replied within time constraint`, o worker nao esta
+rodando ou nao consegue acessar o Redis configurado em `REDIS_URL`.
+
 ## Smoke manual da Fase 1
 
 Depois do login pelo frontend:
@@ -130,3 +176,29 @@ ruff check .
 ```
 
 Se `alembic upgrade head` falhar por conexao ou autenticacao, revise `DATABASE_URL` em `backend/.env` e confirme o acesso com `psql`.
+
+Tambem e possivel rodar um smoke automatizado contra a API ativa:
+
+```bash
+cd "$APP_DIR/backend"
+python -m scripts.smoke_phase1 --base-url http://127.0.0.1:8000
+```
+
+Para tentar remover automaticamente o projeto criado durante o smoke:
+
+```bash
+cd "$APP_DIR/backend"
+python -m scripts.smoke_phase1 --base-url http://127.0.0.1:8000 --cleanup-project
+```
+
+Para exigir que Redis/Celery processem o VCF e que a consulta de variantes volte
+com registros persistidos:
+
+```bash
+cd "$APP_DIR/backend"
+python -m scripts.smoke_phase1 --base-url http://127.0.0.1:8000 --require-worker
+```
+
+Se `API_URL` estiver vazio ou sem host, o script falha antes de chamar a API com
+uma mensagem acionavel. Isso evita erros genericos como `JSONDecodeError` ou
+`URL rejected: No host part in the URL`.

@@ -1,5 +1,59 @@
 # Project Memory
 
+## 2026-07-07 - Server output interpretation and Phase 1 smoke hardening
+
+### Implementado
+
+- Adicionado logging basico configuravel por `LOG_LEVEL`/`GENFORGE_LOG_LEVEL`.
+- Requisicoes HTTP agora registram `request_completed` e `request_failed`.
+- Jobs Celery de variantes agora registram inicio, conclusao, job ausente e
+  falhas com logger `genforge.tasks.variants`.
+- Criado `backend/scripts/smoke_phase1.py` para validar a API ativa com mensagens
+  acionaveis em vez de `JSONDecodeError` quando a API esta parada ou `API_URL`
+  esta vazio.
+- Corrigido delete de projeto com VCF/job associado usando `passive_deletes`
+  para respeitar os `ON DELETE` definidos no banco.
+- Documentados backup com `DATABASE_URL` exportado, porta 8000 ocupada e
+  validacao do worker Celery em `docs/server-deploy.md` e `docs/tests.md`.
+
+### Interpretacao de `saida.txt`
+
+- Alembic online no servidor chegou em `202606260001 (head)`.
+- `pg_dump "$DATABASE_URL"` falhou porque o shell nao tinha `DATABASE_URL`
+  exportado; o comando tentou conectar pelo socket local com o usuario Linux.
+- Duas tentativas de Uvicorn falharam com `address already in use`, indicando
+  outro processo ativo na porta 8000.
+- A API respondeu `/` e `/health` com 200 quando Uvicorn foi iniciado.
+- Frontend `npm install` e `npm run build` passaram, com aviso nao bloqueante de
+  chunk maior que 500 kB.
+- `celery -A app.tasks.celery_app inspect ping` retornou `No nodes replied within
+  time constraint`; worker/Redis real ainda precisa ser iniciado e validado.
+- `smoke_user.sh` falhou por resposta vazia/URL invalida depois que a API foi
+  parada ou `API_URL` ficou sem host.
+- Smoke local sem `--require-worker` passou contra `127.0.0.1:8000`, com job em
+  `queued` e `variants_total=0`.
+- Smoke local com `--require-worker` falhou de forma esperada enquanto nao havia
+  worker processando o job.
+- Cleanup contra o processo ativo em `127.0.0.1:8000` ainda retornou 503; a
+  correcao foi validada pela suite local e exige reiniciar o backend ativo.
+
+### Arquivos e modulos impactados
+
+- Backend: `app/core/config.py`, `app/core/logging.py`, `app/main.py`,
+  `app/projects/models.py`, `app/variants/models.py`, `app/tasks/variant_tasks.py`,
+  `scripts/smoke_phase1.py` e testes.
+- Infra/config: `.env.example`, `backend/.env.example` e `docker-compose.yml`.
+- Documentacao: `docs/server-deploy.md`, `docs/tests.md`,
+  `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` e este arquivo.
+
+### Pendencias
+
+- Rodar `python -m scripts.smoke_phase1 --require-worker` no servidor com Redis e
+  worker Celery ativos.
+- Reiniciar o backend ativo antes de retestar `--cleanup-project` no servidor.
+- Confirmar uma rotina de backup operacional antes de migrations em banco
+  persistente.
+
 ## 2026-07-07 - Initial automated test layer
 
 ### Implementado

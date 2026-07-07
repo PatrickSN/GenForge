@@ -95,6 +95,24 @@ def test_vcf_upload_rejects_invalid_extension(
     assert response.status_code == 400
 
 
+def test_project_delete_cascades_uploaded_files_and_jobs(
+    client: TestClient,
+    auth_headers: dict[str, str],
+    project: dict[str, Any],
+    minimal_vcf_bytes: bytes,
+) -> None:
+    upload_minimal_vcf(client, auth_headers, project["id"], minimal_vcf_bytes)
+
+    response = client.delete(f"/api/v1/projects/{project['id']}", headers=auth_headers)
+    assert response.status_code == 204
+
+    response = client.get(
+        f"/api/v1/variants/files?project_id={project['id']}",
+        headers=auth_headers,
+    )
+    assert response.status_code == 404
+
+
 def test_list_variants_is_paginated_filterable_and_scoped_to_owner(
     client: TestClient,
     auth_headers: dict[str, str],

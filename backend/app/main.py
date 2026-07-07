@@ -1,15 +1,20 @@
 from __future__ import annotations
 
-from fastapi import FastAPI
+import logging
+from time import perf_counter
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth.api import router as auth_router
 from app.core.config import get_settings
+from app.core.logging import configure_logging
 from app.projects.api import router as projects_router
 from app.users.api import router as users_router
 from app.variants.api import router as variants_router
 
 settings = get_settings()
+configure_logging(settings.log_level)
 
 app = FastAPI(
     title="GenForge API",
@@ -27,6 +32,33 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    request_logger = logging.getLogger("genforge.requests")
+    started_at = perf_counter()
+    try:
+        response = await call_next(request)
+    except Exception:
+        duration_ms = (perf_counter() - started_at) * 1000
+        request_logger.exception(
+            "request_failed method=%s path=%s duration_ms=%.2f",
+            request.method,
+            request.url.path,
+            duration_ms,
+        )
+        raise
+
+    duration_ms = (perf_counter() - started_at) * 1000
+    request_logger.info(
+        "request_completed method=%s path=%s status_code=%s duration_ms=%.2f",
+        request.method,
+        request.url.path,
+        response.status_code,
+        duration_ms,
+    )
+    return response
 
 
 @app.get("/", tags=["system"])
