@@ -72,3 +72,59 @@ def list_variants(
         limit=limit,
         offset=offset,
     )
+
+
+@router.get("/files", response_model=Page[VariantFileRead])
+def list_variant_files(
+    current_user: CurrentUser,
+    session: Annotated[Session, Depends(get_session)],
+    project_id: Annotated[UUID, Query()],
+    limit: Annotated[int, Query(ge=1, le=500)] = 100,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Page[VariantFileRead]:
+    items, total = VariantService(session).list_files(
+        project_id=project_id,
+        user_id=current_user.id,
+        limit=limit,
+        offset=offset,
+    )
+    return Page(
+        items=[VariantFileRead.model_validate(item) for item in items],
+        total=total,
+        limit=limit,
+        offset=offset,
+    )
+
+
+@router.get("/jobs", response_model=Page[VariantProcessingJobRead])
+def list_variant_jobs(
+    current_user: CurrentUser,
+    session: Annotated[Session, Depends(get_session)],
+    project_id: Annotated[UUID, Query()],
+    status_filter: Annotated[str | None, Query(alias="status", max_length=32)] = None,
+    limit: Annotated[int, Query(ge=1, le=500)] = 100,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Page[VariantProcessingJobRead]:
+    items, total = VariantService(session).list_jobs(
+        project_id=project_id,
+        user_id=current_user.id,
+        limit=limit,
+        offset=offset,
+        status_filter=status_filter,
+    )
+    return Page(
+        items=[VariantProcessingJobRead.model_validate(item) for item in items],
+        total=total,
+        limit=limit,
+        offset=offset,
+    )
+
+
+@router.get("/jobs/{job_id}", response_model=VariantProcessingJobRead)
+def get_variant_job(
+    job_id: UUID,
+    current_user: CurrentUser,
+    session: Annotated[Session, Depends(get_session)],
+) -> VariantProcessingJobRead:
+    job = VariantService(session).get_job(job_id, user_id=current_user.id)
+    return VariantProcessingJobRead.model_validate(job)

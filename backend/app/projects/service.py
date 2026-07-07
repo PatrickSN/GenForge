@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.projects.models import Project
 from app.projects.repository import ProjectRepository
-from app.projects.schemas import ProjectCreate
+from app.projects.schemas import ProjectCreate, ProjectUpdate
 
 
 class ProjectService:
@@ -34,3 +34,19 @@ class ProjectService:
         if project is None or project.owner_id != owner_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
         return project
+
+    def update_project(self, project_id: UUID, payload: ProjectUpdate, owner_id: UUID) -> Project:
+        project = self.get_project_for_user(project_id, owner_id)
+        update_data = payload.model_dump(exclude_unset=True)
+        if "project_name" in update_data:
+            project.project_name = update_data["project_name"]
+        if "description" in update_data:
+            project.description = update_data["description"]
+        self.session.commit()
+        self.session.refresh(project)
+        return project
+
+    def delete_project(self, project_id: UUID, owner_id: UUID) -> None:
+        project = self.get_project_for_user(project_id, owner_id)
+        self.projects.delete(project)
+        self.session.commit()

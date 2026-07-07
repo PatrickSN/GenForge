@@ -10,6 +10,8 @@ class GeneRead(BaseModel):
     id: UUID
     gene_id: str
     chromosome: str
+    created_at: datetime
+    updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -26,6 +28,7 @@ class VariantRead(BaseModel):
     gene_id: str | None
     source_file_id: UUID | None
     created_at: datetime
+    updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -48,6 +51,7 @@ class VariantFileRead(BaseModel):
     checksum_sha256: str
     status: str
     created_at: datetime
+    updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -60,6 +64,7 @@ class VariantProcessingJobRead(BaseModel):
     variants_inserted: int
     log: str | None
     created_at: datetime
+    updated_at: datetime
     started_at: datetime | None
     finished_at: datetime | None
 

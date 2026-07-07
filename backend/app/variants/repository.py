@@ -29,6 +29,40 @@ class VariantRepository:
     def get_job(self, job_id: UUID) -> VariantProcessingJob | None:
         return self.session.get(VariantProcessingJob, job_id)
 
+    def list_files_for_project(
+        self,
+        project_id: UUID,
+        limit: int,
+        offset: int,
+    ) -> tuple[list[VariantFile], int]:
+        stmt = (
+            select(VariantFile)
+            .where(VariantFile.project_id == project_id)
+            .order_by(VariantFile.created_at.desc())
+        )
+        total = self.session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
+        items = list(self.session.scalars(stmt.limit(limit).offset(offset)))
+        return items, total
+
+    def list_jobs_for_project(
+        self,
+        project_id: UUID,
+        limit: int,
+        offset: int,
+        status: str | None = None,
+    ) -> tuple[list[VariantProcessingJob], int]:
+        stmt = (
+            select(VariantProcessingJob)
+            .join(VariantFile)
+            .where(VariantFile.project_id == project_id)
+            .order_by(VariantProcessingJob.created_at.desc())
+        )
+        if status:
+            stmt = stmt.where(VariantProcessingJob.status == status)
+        total = self.session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
+        items = list(self.session.scalars(stmt.limit(limit).offset(offset)))
+        return items, total
+
     def list_variants(
         self, filters: VariantFilter, limit: int, offset: int
     ) -> tuple[list[Variant], int]:

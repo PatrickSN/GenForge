@@ -40,7 +40,7 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("GENFORGE_REDIS_URL", "REDIS_URL"),
     )
     storage_dir: str = Field(
-        default="storage/uploads",
+        default="storage_data",
         validation_alias=AliasChoices("GENFORGE_STORAGE_DIR", "STORAGE_DIR"),
     )
     backend_cors_origins: Annotated[list[str], NoDecode] = Field(

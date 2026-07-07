@@ -27,6 +27,12 @@ class User(Base):
         server_default=func.now(),
         nullable=False,
     )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )
 
     projects: Mapped[list[Project]] = relationship(back_populates="owner")
     uploads: Mapped[list[VariantFile]] = relationship(back_populates="uploaded_by")
