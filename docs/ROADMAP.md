@@ -120,10 +120,12 @@ Criar uma primeira versão utilizável da plataforma com autenticação, projeto
 * [x] Testar cadastro.
 * [x] Testar login.
 * [x] Testar autorização.
+* [x] Centralizar fixtures pytest para usuario, autenticacao, projeto e VCF minimo.
+* [x] Testar endpoint de usuario autenticado e listagem de usuarios protegida.
 * [x] Testar CRUD de projetos.
 * [x] Testar upload de VCF pequeno.
 * [~] Testar ingestão inicial com parser e job; falta smoke com worker/Celery real no servidor.
-* [ ] Testar filtros de variantes.
+* [x] Testar filtros de variantes implementados na API por cromossomo, gene, impacto e intervalo de posicao.
 
 ## Critérios para concluir a Fase 1
 
@@ -140,9 +142,17 @@ A fase estará concluída quando:
 9. Os testes essenciais passarem.
 10. O README explicar como executar o MVP.
 
-## Status em 2026-06-26
+## Status em 2026-07-07
 
-A Fase 1 está funcional para testes manuais com autenticação, projetos, upload VCF, consulta paginada de variantes e visualização de arquivos/jobs. Antes de declarar a fase concluída, ainda faltam validar migrations e worker Celery no servidor Linux, adicionar logs básicos da aplicação e cobrir filtros de variantes com testes automatizados.
+A Fase 1 esta funcional para testes manuais com autenticacao, projetos, upload
+VCF, consulta paginada de variantes e visualizacao de arquivos/jobs. A camada
+inicial de pytest cobre endpoints de auth/users, projects, upload/listagem de
+arquivos/jobs e listagem filtrada de variantes. As migrations geram SQL offline
+com sucesso, mas a aplicacao online em PostgreSQL de desenvolvimento ainda
+precisa ser revalidada quando houver banco local ou Docker disponivel. Antes de
+declarar a fase concluida, ainda faltam validar worker Celery/Redis real no
+servidor Linux, adicionar logs basicos da aplicacao e manter a validacao
+Alembic online no fluxo regular.
 
 ---
 

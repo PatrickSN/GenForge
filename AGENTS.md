@@ -128,6 +128,35 @@ Cobertura mínima:
 * projetos
 * upload de arquivos
 
+Comandos de validacao atuais:
+
+Backend:
+
+```powershell
+cd backend
+py -3 -m pytest
+py -3 -m ruff check .
+```
+
+Alembic em banco local de desenvolvimento:
+
+```powershell
+cd backend
+$env:GENFORGE_APP_ENV = "development"
+$env:GENFORGE_DATABASE_URL = "postgresql+psycopg://genforge:genforge@localhost:5432/genforge?connect_timeout=5"
+$env:GENFORGE_SECRET_KEY = "change-this-secret-key-for-local-development"
+py -3 -m alembic upgrade head
+```
+
+Frontend:
+
+```powershell
+cd frontend
+npm.cmd run build
+```
+
+Detalhes e status das ultimas validacoes ficam em `docs/tests.md`.
+
 ---
 
 ## Roadmap

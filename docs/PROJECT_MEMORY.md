@@ -1,5 +1,58 @@
 # Project Memory
 
+## 2026-07-07 - Initial automated test layer
+
+### Implementado
+
+- Estrutura inicial de testes automatizados do backend foi reorganizada com
+  fixtures compartilhadas para banco temporario, usuario, autenticacao, projeto
+  e VCF minimo.
+- Testes de endpoints foram separados por dominio: `auth/users`, `projects`,
+  `variants` e `migrations`.
+- Cobertura ampliada para cadastro/login, usuario autenticado, listagem de
+  usuarios protegida, CRUD de projetos com ownership, upload VCF, listagem de
+  arquivos/jobs, listagem paginada de variantes e filtros implementados.
+- Worker Celery real nao e executado nos testes unitarios de API; o
+  enfileiramento de `process_variant_file.delay` e capturado por fixture.
+- Criado `docs/tests.md` com comandos de validacao e limites atuais.
+
+### Arquivos e modulos impactados
+
+- Backend tests: `backend/tests/conftest.py`, `backend/tests/helpers.py`,
+  `backend/tests/test_auth_users_api.py`, `backend/tests/test_projects_api.py`,
+  `backend/tests/test_variants_api.py` e `backend/tests/test_migrations.py`.
+- Documentacao: `AGENTS.md`, `README.md`, `docs/tests.md`,
+  `docs/ROADMAP.md`, `docs/ARCHITECTURE.md` e este arquivo.
+
+### Validacoes executadas
+
+- `cd backend && py -3 -m pytest` passou com 25 testes.
+- `cd backend && py -3 -m ruff check .` passou.
+- `cd backend && python -m alembic upgrade head --sql` passou usando
+  `GENFORGE_DATABASE_URL` local de desenvolvimento.
+- `cd frontend && npm.cmd run build` passou.
+- O build frontend emitiu aviso nao bloqueante de chunk maior que 500 kB.
+
+### Validacoes bloqueadas
+
+- Comando: `cd backend && py -3 -m alembic upgrade head`
+- Erro: `Acesso negado` ao launcher Python local neste host.
+- Comando alternativo: `python.exe -m alembic upgrade head` com
+  `GENFORGE_DATABASE_URL=postgresql+psycopg://genforge:genforge@localhost:5432/genforge?connect_timeout=5`
+- Erro: `connection timeout expired` ao conectar em `localhost:5432`.
+- Tentativa de subir banco dev: `docker compose up -d postgres`.
+- Erro: `docker` nao esta no PATH neste ambiente.
+
+### Pendencias
+
+- Reexecutar `alembic upgrade head` contra PostgreSQL de desenvolvimento real
+  quando o banco local ou Docker estiver disponivel.
+- Validar worker Celery/Redis real processando `variants.process_variant_file`
+  com VCF pequeno.
+- Adicionar testes end-to-end de frontend para login, projeto, upload e tabela
+  de variantes quando houver harness de browser/servidor dedicado.
+- Avaliar code-splitting do frontend para reduzir o aviso de chunk grande.
+
 ## 2026-07-07 - Auth access error handling
 
 ### Implementado
