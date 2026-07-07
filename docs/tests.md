@@ -67,15 +67,52 @@ npm.cmd run build
 
 No Linux/macOS, `npm run build` e equivalente.
 
+## Smoke da API em servidor Linux
+
+Com a API ativa:
+
+```bash
+cd backend
+python -m scripts.smoke_phase1 --base-url http://127.0.0.1:8000
+```
+
+Use `--cleanup-project` para tentar remover o projeto criado pelo smoke ao final:
+
+```bash
+cd backend
+python -m scripts.smoke_phase1 --base-url http://127.0.0.1:8000 --cleanup-project
+```
+
+Com Redis e worker Celery ativos, exigindo ingestao completa do VCF:
+
+```bash
+cd backend
+python -m scripts.smoke_phase1 --base-url http://127.0.0.1:8000 --require-worker
+```
+
+O script valida `/`, `/health`, cadastro, login, `/users/me`, criacao de projeto,
+upload VCF, listagem de arquivos, jobs e variantes. Com `--require-worker`, ele
+polls o job ate `finished` e falha se nenhuma variante for persistida.
+
 ## Ultima validacao registrada
 
 Data: 2026-07-07.
 
-- `cd backend && py -3 -m pytest`: passou com 25 testes.
+- `cd backend && py -3 -m pytest`: passou com 30 testes.
 - `cd backend && py -3 -m ruff check .`: passou.
 - Alembic offline `upgrade head --sql`: passou.
-- Alembic online `upgrade head` com `localhost:5432/genforge`: bloqueado por
-  timeout de conexao ao PostgreSQL local.
-- `docker compose up -d postgres`: bloqueado porque `docker` nao esta no PATH.
+- Alembic online no servidor Linux: `python3.11 -m alembic current`, `heads`,
+  `history` e `upgrade head` chegaram em `202606260001 (head)`.
+- Backup no servidor via `pg_dump "$DATABASE_URL"` falhou porque `DATABASE_URL`
+  nao estava exportado no shell e o `pg_dump` tentou usar o usuario Linux.
+- `celery -A app.tasks.celery_app inspect ping` no servidor retornou `No nodes
+  replied within time constraint`; worker/Redis real ainda precisa ser validado.
+- `python -m scripts.smoke_phase1 --base-url http://127.0.0.1:8000` passou
+  contra a API local ativa para auth, users, projects, upload VCF e listagens.
+- `python -m scripts.smoke_phase1 --require-worker --wait-job-seconds 3`
+  confirmou falha controlada quando o job permanece `queued` sem worker.
+- `--cleanup-project` contra o processo ativo em `127.0.0.1:8000` retornou 503;
+  a correcao de cascade foi adicionada e validada por teste, mas o backend ativo
+  precisa ser reiniciado para carregar a nova versao.
 - `cd frontend && npm.cmd run build`: passou com aviso nao bloqueante de chunk
   maior que 500 kB.

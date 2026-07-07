@@ -40,6 +40,6 @@ class Project(Base):
     )
 
     owner: Mapped[User] = relationship(back_populates="projects")
-    samples: Mapped[list[Sample]] = relationship(back_populates="project")
-    variants: Mapped[list[Variant]] = relationship(back_populates="project")
-    files: Mapped[list[VariantFile]] = relationship(back_populates="project")
+    samples: Mapped[list[Sample]] = relationship(back_populates="project", passive_deletes=True)
+    variants: Mapped[list[Variant]] = relationship(back_populates="project", passive_deletes=True)
+    files: Mapped[list[VariantFile]] = relationship(back_populates="project", passive_deletes=True)

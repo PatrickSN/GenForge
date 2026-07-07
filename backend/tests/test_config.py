@@ -21,6 +21,7 @@ def test_settings_accept_server_env_names(monkeypatch) -> None:
         "CORS_ORIGINS",
         "http://localhost:5173,http://200.235.143.10:5173",
     )
+    monkeypatch.setenv("LOG_LEVEL", "debug")
 
     settings = Settings(_env_file=None)
 
@@ -30,3 +31,4 @@ def test_settings_accept_server_env_names(monkeypatch) -> None:
         "http://localhost:5173",
         "http://200.235.143.10:5173",
     ]
+    assert settings.log_level == "DEBUG"

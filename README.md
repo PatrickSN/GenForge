@@ -183,6 +183,13 @@ npm run build
 Veja a matriz de comandos, fixtures e status de validacao em
 [docs/tests.md](docs/tests.md).
 
+Smoke da API com backend ativo:
+
+```bash
+cd backend
+python -m scripts.smoke_phase1 --base-url http://127.0.0.1:8000
+```
+
 ## Teste em servidor Linux
 
 Para testar o GenForge em um servidor acessado por VPN ou IP externo, configure `backend/.env` e `frontend/.env` antes de iniciar os servicos.

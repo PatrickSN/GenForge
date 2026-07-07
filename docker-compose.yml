@@ -36,6 +36,7 @@ services:
       GENFORGE_DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://genforge:genforge@postgres:5432/genforge}
       GENFORGE_REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       GENFORGE_STORAGE_DIR: ${STORAGE_DIR:-/data/genforge}
+      GENFORGE_LOG_LEVEL: ${LOG_LEVEL:-INFO}
       GENFORGE_CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173,http://200.235.143.10:5173}
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
@@ -60,6 +61,7 @@ services:
       GENFORGE_DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://genforge:genforge@postgres:5432/genforge}
       GENFORGE_REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       GENFORGE_STORAGE_DIR: ${STORAGE_DIR:-/data/genforge}
+      GENFORGE_LOG_LEVEL: ${LOG_LEVEL:-INFO}
       GENFORGE_CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173,http://200.235.143.10:5173}
     command: celery -A app.tasks.celery_app worker --loglevel=INFO
     volumes:
